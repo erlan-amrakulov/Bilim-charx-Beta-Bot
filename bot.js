@@ -1,15 +1,20 @@
 const express = require('express');
 const app = express();
-const PORT = process.env.PORT || 3000;
+
+
+const PORT = process.env.PORT || 10000; 
+const HOST = '0.0.0.0';
+
 
 app.get('/', (req, res) => {
-  res.send('Bot is online!');
+  res.status(200).send('HEALTH CHECK: Bot is alive!');
 });
 
-// Aynan '0.0.0.0' va PORT ko'rsatilishi shart, shunda Render portni topadi
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server listening on port ${PORT}`);
+
+app.listen(PORT, HOST, () => {
+  console.log(`Server listening on http://${HOST}:${PORT}`);
 });
+
 
 
 require("dotenv").config();
