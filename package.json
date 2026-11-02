@@ -1,0 +1,19 @@
+{
+  "name": "bilim-charx",
+  "version": "2.5.1",
+  "private": true,
+  "description": "Bilim Charx — Solo, xona janglari, progress va avtomatik zaxirali lokal ma’lumotlar bazasi bilan Telegram bot",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "check": "node --check bot.js",
+    "validate:questions": "node validate-questions.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "telegraf": "^4.16.3"
+  }
+}

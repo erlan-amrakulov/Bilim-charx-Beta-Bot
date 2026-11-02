@@ -1,0 +1,9 @@
+.env
+node_modules/
+quiz-data.json
+quiz-data.json.tmp
+*.log
+.DS_Store
+data/
+quiz-data.backup.json
+quiz-data.backup.json.tmp
