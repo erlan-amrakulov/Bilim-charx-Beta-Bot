@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 
 
-const PORT = process.env.PORT || 10000; 
+const PORT = process.env.PORT || 10000;
 const HOST = '0.0.0.0';
 
 
@@ -14,6 +14,22 @@ app.get('/', (req, res) => {
 app.listen(PORT, HOST, () => {
   console.log(`Server listening on http://${HOST}:${PORT}`);
 });
+const axios = require('axios');
+
+// Render sizga bergan URL havolasini kiriting (oxirida / bo'lmasin)
+const RENDER_URL = 'https://bilim-charx-bot-3.onrender.com/';
+
+// Har 10 daqiqada (600 000 millisoniya) o'zini o'zi chaqirish
+setInterval(async () => {
+  try {
+    // Axios so'rov yuborib Render javobini kutadi
+    const response = await axios.get(RENDER_URL);
+    console.log(`SELF-PING: Server uyg'oq! Javob: ${response.data}`);
+  } catch (error) {
+    console.error('SELF-PING xatolik yuz berdi:', error.message);
+  }
+}, 600000); // 10 daqiqa
+
 
 
 
