@@ -14,12 +14,12 @@ services:
       - key: NODE_VERSION
         value: 20
       - key: BOT_TOKEN
-        sync: false
+        sync: true
       - key: ADMIN_IDS
-        sync: false
+        sync: true
       - key: DATA_DIR
         value: /var/data
       - key: REQUIRE_SUBSCRIPTION
-        value: "false"
+        value: "true"
       - key: MASS_BATTLE_QUESTION_COUNT
         value: "10"
