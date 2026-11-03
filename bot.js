@@ -1,8 +1,55 @@
+
+
 require("dotenv").config();
 
 const fs = require("fs");
 const path = require("path");
 const { Telegraf, Markup, session } = require("telegraf");
+// ==================== VAQT ZONASI ====================
+const BOT_TOKEN_OLD = process.env.BOT_TOKEN_OLD;
+
+if (!BOT_TOKEN_OLD) {
+  console.error("BOT_TOKEN_OLD .env faylida topilmadi!");
+  process.exit(1);
+}
+
+const bot_old = new Telegraf(BOT_TOKEN_OLD);
+
+const NEW_BOT = "bilimcharxBot";
+
+bot_old.use(async (ctx) => {
+  try {
+    if (ctx.callbackQuery) {
+      await ctx.answerCbQuery(
+        "Ushbu bot faoliyatini to‘xtatdi."
+      );
+    }
+
+    if (!ctx.from) return;
+
+    await ctx.reply(
+      "⚠️ BILIM CHARX — MUHIM XABAR\n\n" +
+      "Ushbu bot o‘z faoliyatini to‘xtatdi.\n\n" +
+      "Bilim Charx faoliyati yangi botga ko‘chirildi. " +
+      "Barcha imkoniyatlardan foydalanish uchun yangi botga o‘ting:",
+      Markup.inlineKeyboard([
+        [
+          Markup.button.url(
+            "🚀 Yangi botga o‘tish",
+            `https://t.me/${NEW_BOT}`
+          )
+        ]
+      ])
+    );
+  } catch (error) {
+    console.log("Xatolik:", error.message);
+  }
+});
+
+bot_old.launch()
+  .then(() => console.log("Eski bot yo‘naltirish rejimida ishlayapti."))
+  .catch((error) => console.error("Bot xatosi:", error));
+
 
 // ==================== SOZLAMALAR ====================
 
@@ -752,9 +799,8 @@ function lobbyText(room) {
     .map((player, index) => {
       const ready = player.ready ? "✅" : "⏳";
 
-      return `${index + 1}. ${ready} ${escapeHTML(player.name)}${
-        player.id === room.hostId ? " 👑" : ""
-      }`;
+      return `${index + 1}. ${ready} ${escapeHTML(player.name)}${player.id === room.hostId ? " 👑" : ""
+        }`;
     })
     .join("\n");
 
@@ -914,9 +960,9 @@ async function startGame(ctx, room) {
       await bot.telegram.sendMessage(
         player.id,
         `🎮 O‘yin boshlandi!\n` +
-          `Xona: ${room.code}\n` +
-          `Fan: ${getCategoryName(room.subject || "all")}\n` +
-          `Savollar: ${room.questions.length}`
+        `Xona: ${room.code}\n` +
+        `Fan: ${getCategoryName(room.subject || "all")}\n` +
+        `Savollar: ${room.questions.length}`
       );
     } catch {
       // Botga shaxsiy xabar yuborish cheklangan bo'lishi mumkin.
@@ -1195,8 +1241,8 @@ bot.start(async (ctx) => {
 
   await ctx.reply(
     `Assalomu alaykum, ${getName(ctx.from)}!\n\n` +
-      "🧠 <b>Bilim Charx</b> botiga xush kelibsiz!\n" +
-      "Do‘stlaringiz bilan bilim bellashuvida qatnashing.",
+    "🧠 <b>Bilim Charx</b> botiga xush kelibsiz!\n" +
+    "Do‘stlaringiz bilan bilim bellashuvida qatnashing.",
     {
       parse_mode: "HTML",
       ...replyMainMenu(),
@@ -1207,9 +1253,9 @@ bot.start(async (ctx) => {
 bot.command("help", async (ctx) => {
   await ctx.reply(
     "📖 <b>Yordam</b>\n\n" +
-      "/start — asosiy menyu\n" +
-      "/cancel — joriy amalni bekor qilish\n" +
-      "/admin — administrator paneli (faqat adminlar)",
+    "/start — asosiy menyu\n" +
+    "/cancel — joriy amalni bekor qilish\n" +
+    "/admin — administrator paneli (faqat adminlar)",
     { parse_mode: "HTML", ...replyMainMenu() }
   );
 });
@@ -1266,11 +1312,11 @@ bot.action("info:rules", async (ctx) => {
   await safeEdit(
     ctx,
     "📖 <b>O‘YIN QOIDALARI</b>\n\n" +
-      "1. Xona yarating yoki xona kodiga qo‘shiling.\n" +
-      "2. O‘yinchilar yig‘ilgach, xona egasi o‘yinni boshlaydi.\n" +
-      "3. Har savolga javob berish uchun 20 soniya beriladi.\n" +
-      "4. To‘g‘ri va tez javoblar ko‘proq ochko beradi.\n" +
-      "5. O‘yin yakunida natijalar ko‘rsatiladi.",
+    "1. Xona yarating yoki xona kodiga qo‘shiling.\n" +
+    "2. O‘yinchilar yig‘ilgach, xona egasi o‘yinni boshlaydi.\n" +
+    "3. Har savolga javob berish uchun 20 soniya beriladi.\n" +
+    "4. To‘g‘ri va tez javoblar ko‘proq ochko beradi.\n" +
+    "5. O‘yin yakunida natijalar ko‘rsatiladi.",
     { ...mainMenu() }
   );
 });
@@ -1302,8 +1348,8 @@ bot.action("profile:rating", async (ctx) => {
   await safeEdit(
     ctx,
     `🏆 <b>REYTINGIM</b>\n\n` +
-      `Sizning o‘rningiz: <b>${place || "—"}</b>\n` +
-      `Ochkolaringiz: <b>${user.points}</b>`,
+    `Sizning o‘rningiz: <b>${place || "—"}</b>\n` +
+    `Ochkolaringiz: <b>${user.points}</b>`,
     {
       ...Markup.inlineKeyboard([
         [Markup.button.callback("⬅️ Menyu", "menu:home")],
@@ -1494,8 +1540,8 @@ bot.action(
 
     await ctx.reply(
       "🧠 <b>Fanni tanlang</b>\n\n" +
-        `Qiyinlik: <b>${escapeHTML(difficulty)}</b>\n` +
-        "Quyidagi fanlardan birini tanlang:",
+      `Qiyinlik: <b>${escapeHTML(difficulty)}</b>\n` +
+      "Quyidagi fanlardan birini tanlang:",
       {
         parse_mode: "HTML",
         ...Markup.inlineKeyboard(rows),
@@ -1904,7 +1950,7 @@ async function startMassBattle(battle) {
     battle.status = "cancelled";
     saveDB();
     for (const adminId of ADMIN_IDS) {
-      try { await bot.telegram.sendMessage(adminId, "❌ Ommaviy Battle boshlanmadi: test.json ichida savollar topilmadi."); } catch {}
+      try { await bot.telegram.sendMessage(adminId, "❌ Ommaviy Battle boshlanmadi: test.json ichida savollar topilmadi."); } catch { }
     }
     return;
   }
@@ -2009,7 +2055,7 @@ async function endMassBattleQuestion(battle) {
     } else {
       feedback = `❌ Noto‘g‘ri yoki vaqt tugadi.\nTo‘g‘ri javob: ${escapeHTML(q.options[correctIndex])}`;
     }
-    try { await bot.telegram.sendMessage(player.id, feedback, { parse_mode: "HTML" }); } catch {}
+    try { await bot.telegram.sendMessage(player.id, feedback, { parse_mode: "HTML" }); } catch { }
   }
 
   const daily = getDailyStats(battle.day);
@@ -2100,7 +2146,7 @@ async function joinMassBattle(ctx, day) {
     { parse_mode: "HTML" }
   );
   if (battle.status === "playing") {
-    try { await bot.telegram.sendMessage(ctx.from.id, "ℹ️ Siz Battle davomida qo‘shildingiz. Keyingi savolni kuting."); } catch {}
+    try { await bot.telegram.sendMessage(ctx.from.id, "ℹ️ Siz Battle davomida qo‘shildingiz. Keyingi savolni kuting."); } catch { }
   }
 }
 
@@ -2125,7 +2171,7 @@ async function runMassBattleScheduler() {
     battle.status = "waiting_admin";
     saveDB();
     for (const adminId of ADMIN_IDS) {
-      try { await bot.telegram.sendMessage(adminId, "⚠️ Battle uchun admin ruxsati berilmadi. Battle boshlanmadi."); } catch {}
+      try { await bot.telegram.sendMessage(adminId, "⚠️ Battle uchun admin ruxsati berilmadi. Battle boshlanmadi."); } catch { }
     }
   }
 }
@@ -2385,14 +2431,14 @@ bot.action("admin:errors", async (ctx) => {
 
   const text = errors.length
     ? [
-        "⚠️ <b>OXIRGI XATOLAR</b>",
-        "",
-        ...errors.map(
-          (error, index) =>
-            `${index + 1}. ${escapeHTML(error.time)}\n` +
-            `${escapeHTML(error.message).slice(0, 700)}`
-        ),
-      ].join("\n\n")
+      "⚠️ <b>OXIRGI XATOLAR</b>",
+      "",
+      ...errors.map(
+        (error, index) =>
+          `${index + 1}. ${escapeHTML(error.time)}\n` +
+          `${escapeHTML(error.message).slice(0, 700)}`
+      ),
+    ].join("\n\n")
     : "✅ Hozircha saqlangan xatolar yo‘q.";
 
   await safeEdit(ctx, text, backToAdmin());
@@ -2751,8 +2797,8 @@ bot.action(/^admin:tournament:start:(.+)$/, async (ctx) => {
   await safeEdit(
     ctx,
     `🏆 <b>${escapeHTML(tournament.name)}</b>\n\n` +
-      `Holati: <b>Boshlangan</b>\n` +
-      `Ishtirokchilar: <b>${tournament.players.length}</b>`,
+    `Holati: <b>Boshlangan</b>\n` +
+    `Ishtirokchilar: <b>${tournament.players.length}</b>`,
     backToAdmin()
   );
 
