@@ -2825,6 +2825,49 @@ const autosaveTimer = setInterval(() => saveDB(), 30_000);
 autosaveTimer.unref();
 
 
+// async function startBotWithRetry() {
+//   let attempt = 0;
+
+//   while (!isShuttingDown) {
+//     try {
+//       console.log("🧠 Bilim Charx ishga tushirilmoqda...");
+
+//       await bot.launch();
+
+//       console.log("🧠 Bilim Charx muvaffaqiyatli ishga tushdi.");
+//       console.log("📁 Ma'lumotlar papkasi:", DATA_DIR);
+//       console.log("💾 Asosiy baza:", DB_FILE);
+//       console.log("🛟 Zaxira baza:", DB_BACKUP_FILE);
+//       console.log("Admin ID'lar:", ADMIN_IDS);
+
+//       return;
+//     } catch (error) {
+//       attempt++;
+
+//       const waitTime = Math.min(
+//         60000,
+//         5000 * Math.pow(2, Math.min(attempt - 1, 4))
+//       );
+
+//       console.error(
+//         `❌ Botni ishga tushirishda xato (urinish ${attempt}):`,
+//         error.message
+//       );
+
+//       console.log(
+//         `${waitTime / 1000} soniyadan keyin qayta uriniladi...`
+//       );
+
+//       await new Promise(resolve => setTimeout(resolve, waitTime));
+//     }
+//   }
+// }
+
+
+let isShuttingDown = false;
+
+// ==================== BOTNI QAYTA ISHGA TUSHIRISH ====================
+
 async function startBotWithRetry() {
   let attempt = 0;
 
@@ -2841,6 +2884,7 @@ async function startBotWithRetry() {
       console.log("Admin ID'lar:", ADMIN_IDS);
 
       return;
+
     } catch (error) {
       attempt++;
 
@@ -2863,16 +2907,16 @@ async function startBotWithRetry() {
   }
 }
 
-startBotWithRetry();
-
-let isShuttingDown = false;
+// ==================== GRACEFUL SHUTDOWN ====================
 
 function gracefulShutdown(signal) {
   if (isShuttingDown) return;
 
   isShuttingDown = true;
 
-  console.log(`\n${signal} qabul qilindi. Ma'lumotlar saqlanmoqda...`);
+  console.log(
+    `\n${signal} qabul qilindi. Ma'lumotlar saqlanmoqda...`
+  );
 
   clearInterval(autosaveTimer);
   saveDB();
@@ -2881,3 +2925,6 @@ function gracefulShutdown(signal) {
 
 process.once("SIGINT", () => gracefulShutdown("SIGINT"));
 process.once("SIGTERM", () => gracefulShutdown("SIGTERM"));
+
+// Botni ishga tushiramiz
+startBotWithRetry();
