@@ -2824,29 +2824,56 @@ bot.catch(async (error, ctx) => {
 const autosaveTimer = setInterval(() => saveDB(), 30_000);
 autosaveTimer.unref();
 
-bot.launch()
-  .then(() => {
-    console.log("🧠 Bilim Charx ishga tushdi.");
-    console.log("📁 Ma'lumotlar papkasi:", DATA_DIR);
-    console.log("💾 Asosiy baza:", DB_FILE);
-    console.log("🛟 Zaxira baza:", DB_BACKUP_FILE);
-    console.log("Admin ID'lar:", ADMIN_IDS);
-    // Kunlik ommaviy Battle scheduleri vaqtincha o‘chirildi.
-    // Turnirlar tugmasi faqat vaqtincha ishlamayotgani haqida xabar beradi.
-  })
-  .catch((error) => {
-    console.error(
-      "Botni ishga tushirishda xato:",
-      error.message
-    );
-    process.exit(1);
-  });
+
+async function startBotWithRetry() {
+  let attempt = 0;
+
+  while (!isShuttingDown) {
+    try {
+      console.log("🧠 Bilim Charx ishga tushirilmoqda...");
+
+      await bot.launch();
+
+      console.log("🧠 Bilim Charx muvaffaqiyatli ishga tushdi.");
+      console.log("📁 Ma'lumotlar papkasi:", DATA_DIR);
+      console.log("💾 Asosiy baza:", DB_FILE);
+      console.log("🛟 Zaxira baza:", DB_BACKUP_FILE);
+      console.log("Admin ID'lar:", ADMIN_IDS);
+
+      return;
+    } catch (error) {
+      attempt++;
+
+      const waitTime = Math.min(
+        60000,
+        5000 * Math.pow(2, Math.min(attempt - 1, 4))
+      );
+
+      console.error(
+        `❌ Botni ishga tushirishda xato (urinish ${attempt}):`,
+        error.message
+      );
+
+      console.log(
+        `${waitTime / 1000} soniyadan keyin qayta uriniladi...`
+      );
+
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+    }
+  }
+}
+
+startBotWithRetry();
 
 let isShuttingDown = false;
+
 function gracefulShutdown(signal) {
   if (isShuttingDown) return;
+
   isShuttingDown = true;
+
   console.log(`\n${signal} qabul qilindi. Ma'lumotlar saqlanmoqda...`);
+
   clearInterval(autosaveTimer);
   saveDB();
   bot.stop(signal);
