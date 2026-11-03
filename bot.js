@@ -19,7 +19,7 @@ app.listen(PORT, '0.0.0.0', () => {
   // ==========================================
   // 2-QADAM: SELF-PING (FAQAT SERVER YONGANDAN KEYIN ISHLAYDI)
   // ==========================================
-  const MY_RENDER_URL = 'https://onrender.com'; // O'zingizning to'liq render havolangizni yozing
+  const MY_RENDER_URL = 'https://bilim-charx-bot-3.onrender.com'; // O'zingizning to'liq render havolangizni yozing
 
   // Server to'liq yongandan keyin 5 daqiqa o'tib birinchi pingni yuboradi
   setInterval(async () => {
