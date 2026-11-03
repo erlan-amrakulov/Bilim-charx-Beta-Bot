@@ -1,34 +1,41 @@
+// ==========================================
+// 1-QADAM: EXPRESS SERVER (ENG TEPADA)
+// ==========================================
 const express = require('express');
+const axios = require('axios');
 const app = express();
 
-
-const PORT = process.env.PORT || 10000;
-const HOST = '0.0.0.0';
-
+// Render uchun standart PORT va HOST (Render o'zi avtomatik PORT beradi)
+const PORT = process.env.PORT || 10000; 
 
 app.get('/', (req, res) => {
-  res.status(200).send('HEALTH CHECK: Bot is alive!');
+  res.status(200).send('Bot is online!');
 });
 
+// Serverni ishga tushiramiz
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server listening on port ${PORT}`);
+  
+  // ==========================================
+  // 2-QADAM: SELF-PING (FAQAT SERVER YONGANDAN KEYIN ISHLAYDI)
+  // ==========================================
+  const MY_RENDER_URL = 'https://onrender.com'; // O'zingizning to'liq render havolangizni yozing
 
-app.listen(PORT, HOST, () => {
-  console.log(`Server listening on http://${HOST}:${PORT}`);
+  // Server to'liq yongandan keyin 5 daqiqa o'tib birinchi pingni yuboradi
+  setInterval(async () => {
+    try {
+      const response = await axios.get(MY_RENDER_URL);
+      console.log(`[SELF-PING]: Server uyg'oq! Javob: ${response.data}`);
+    } catch (error) {
+      console.error('[SELF-PING ERROR]:', error.message);
+    }
+  }, 600000); // Har 10 daqiqada (600000 ms)
 });
-const axios = require('axios');
 
-// Render sizga bergan URL havolasini kiriting (oxirida / bo'lmasin)
-const RENDER_URL = 'https://bilim-charx-bot-3.onrender.com/';
-
-// Har 10 daqiqada (600 000 millisoniya) o'zini o'zi chaqirish
-setInterval(async () => {
-  try {
-    // Axios so'rov yuborib Render javobini kutadi
-    const response = await axios.get(RENDER_URL);
-    console.log(`SELF-PING: Server uyg'oq! Javob: ${response.data}`);
-  } catch (error) {
-    console.error('SELF-PING xatolik yuz berdi:', error.message);
-  }
-}, 600000); // 10 daqiqa
+// ==========================================
+// 3-QADAM: TELEGRAM BOT KODLARI (TAGIDA)
+// ==========================================
+// Qolgan bot kodlaringiz shu yerda davom etadi...
 
 
 
